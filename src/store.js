@@ -1,8 +1,9 @@
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 
-const initialState = { balance: 0, loan: 0, loanPurpose: "" };
+const initialStateAccount = { balance: 0, loan: 0, loanPurpose: "" };
+const initialStateCustomer = { fullName: "", nationalID: "", createdDate: "" };
 
-function reducer(state = initialState, action) {
+function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     case "account/deposit":
       return { ...state, balance: state.balance + action.payload };
@@ -28,7 +29,27 @@ function reducer(state = initialState, action) {
   }
 }
 
-const store = createStore(reducer);
+function customerReducer(state = initialStateCustomer, action) {
+  switch (action.type) {
+    case "customer/createdAccount":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalID: action.payload.nationalID,
+        createdDate: action.payload.createdDate,
+      };
+    case "customer/updateCustomer":
+      return { ...state, fullName: action.payload };
+    default:
+      return state;
+  }
+}
+
+const rootReducer = combineReducers({
+  customer: customerReducer,
+  account: accountReducer,
+});
+const store = createStore(rootReducer);
 
 // store.dispatch({ type: "account/deposit", payload: 5000 });
 // console.log(store.getState());
@@ -67,4 +88,29 @@ function payLoan() {
 }
 
 store.dispatch(payLoan());
+console.log(store.getState());
+
+function createCustomer(fullName, nationalID) {
+  return {
+    type: "customer/createdAccount",
+    payload: { fullName, nationalID, createdDate: new Date().toISOString() },
+  };
+}
+
+function updateCustomer(fullname) {
+  return { type: "customer/updateCustomer", payload: fullname };
+}
+store.dispatch(deposit(5000));
+console.log(store.getState());
+store.dispatch(withdraw(399 + 55));
+console.log(store.getState());
+
+store.dispatch(loanRequest(900, "buy perfume"));
+console.log(store.getState());
+
+store.dispatch(payLoan());
+console.log(store.getState());
+store.dispatch(createCustomer("johnson johnson", "324234"));
+console.log(store.getState());
+store.dispatch(updateCustomer("johnso"));
 console.log(store.getState());
