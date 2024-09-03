@@ -4,6 +4,7 @@ import { deposit, loanRequest, payLoan, withdraw } from "./AccountSlice";
 
 function AccountOperations() {
   const loanbalance = useSelector((store) => store.account.loan);
+  const loanReason = useSelector((store) => store.account.loanPurpose);
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawalAmount, setWithdrawalAmount] = useState("");
   const [loanAmount, setLoanAmount] = useState("");
@@ -21,6 +22,7 @@ function AccountOperations() {
   }
 
   function handleRequestLoan() {
+    if (!loanAmount || !loanPurpose) return;
     dispatch(loanRequest(loanAmount, loanPurpose));
     setLoanAmount("");
     setLoanPurpose("");
@@ -81,18 +83,16 @@ function AccountOperations() {
           <button onClick={handleRequestLoan}>Request loan</button>
         </div>
 
-        <div>
-          {loanbalance ? (
-            <div>
-              <span>
-                Pay back ${loanbalance} {loanPurpose}
-              </span>
-              <button onClick={handlePayLoan}>Pay loan</button>
-            </div>
-          ) : (
-            <div></div>
-          )}
-        </div>
+        {loanbalance ? (
+          <div>
+            <span>
+              Pay back ${loanbalance} {loanReason}
+            </span>
+            <button onClick={handlePayLoan}>Pay loan</button>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
     </div>
   );
