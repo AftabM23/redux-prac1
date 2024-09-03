@@ -26,17 +26,17 @@ export default function accountReducer(state = initialStateAccount, action) {
   }
 }
 export function deposit(amount) {
-  return { type: "account/deposit", payload: amount };
+  return { type: "account/deposit", payload: Number(amount) };
 }
 
 export function withdraw(amount) {
-  return { type: "account/withdraw", payload: amount };
+  return { type: "account/withdraw", payload: Number(amount) };
 }
 
 export function loanRequest(amount, purpose) {
   return {
     type: "account/loanRequest",
-    payload: { amount, purpose },
+    payload: { amount: +amount, purpose },
   };
 }
 
